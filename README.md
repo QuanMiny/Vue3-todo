@@ -15,10 +15,9 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 抽离组件
+- 观察设计稿
+- 拆分组件
+- 拆解复杂组件
+- 减少嵌套层数
+- 复用组件或功能
