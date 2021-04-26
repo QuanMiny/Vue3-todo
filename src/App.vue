@@ -16,33 +16,23 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+
 import TodoAdd from "./components/TodoAdd";
 import TodoFilter from "./components/TodoFilter";
 import TodoList from "./components/TodoList";
+import useTodos from "@/composables/useTodos.js"
+import useFilterTodos from "@/composables/useFilterTodos.js"
 
 export default {
   name: "App",
   components: { TodoAdd, TodoFilter, TodoList },
   setup() {
     // todos 作为默认todo列表的数据 绑定到todo-list上
-    const todos = ref([]);
     // 添加todo函数 todo参数由子组件TodoAdd.vue传过来 追加到列表中
-    const addTodo = todo => todos.value.push(todo);
+    const { todos, addTodo } = useTodos();
     // 保存默认过滤选项为全部
-    const filter = ref("all");
     // 根据filter值过滤todos列表 利用计算属性
-    const filteredTodos = computed(() => {
-      switch (filter.value) {
-        case "done":
-          return todos.value.filter(todo => todo.completed);
-        case "todo":
-          return todos.value.filter(todo => !todo.completed);
-        default:
-          return todos.value;
-      }
-    });
-
+    const { filter, filteredTodos } = useFilterTodos(todos);
     // 为了在template里使用数据和函数，返回对象
     return {
       todos,

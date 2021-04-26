@@ -21,31 +21,36 @@ export default {
   // 使用props访问传递进来的属性
   // context上下文信息中emit可以触发事件
   setup(props, context) {
-    // 用户输入内容
-    const todoContent = ref("");
-    // 触发函数
-    const emitAddTodo = () => {
-      // todo对象接收父组件的传值
-      const todo = {
-        // props.tid为todos列表的length
-        id: props.tid,
-        // 获取ref中的值需要使用value属性 赋给content作为新的内容
-        content: todoContent.value,
-        // 完成状态 默认未完成
-        completed: false
-      };
-      // todo对象当作对象传递给 父组件app.vue中的add-todo函数
-      context.emit("add-todo", todo);
-      // 清空输入框
-      todoContent.value = "";
-    };
-
-    return {
-      todoContent,
-      emitAddTodo
-    };
+    return useEmitAddTodo(props.tid, context.emit);
   }
 };
+
+// 抽离触发addtodo的业务逻辑
+function useEmitAddTodo(tid, emit) {
+  // 用户输入内容
+  const todoContent = ref("");
+  // 触发函数
+  const emitAddTodo = () => {
+    // todo对象接收父组件的传值
+    const todo = {
+      // props.tid为todos列表的length
+      id: tid,
+      // 获取ref中的值需要使用value属性 赋给content作为新的内容
+      content: todoContent.value,
+      // 完成状态 默认未完成
+      completed: false
+    };
+    // todo对象当作对象传递给 父组件app.vue中的add-todo函数
+    emit("add-todo", todo);
+    // 清空输入框
+    todoContent.value = "";
+  };
+
+  return {
+    todoContent,
+    emitAddTodo
+  };
+}
 </script>
 
 <style>
