@@ -1,9 +1,17 @@
 <template>
-  <div class="todo-item">
+  <div class="todo-item" :class="{ done: todoItem.completed }">
     <!-- label标签包裹 使checkbox和自定义复选框选中时关联 -->
     <label>
-      <input type="checkbox" />
-      Todo 1
+      <!-- checked判断选中状态 -->
+      <!--  @click="$emit('change-state', $event)" 
+      点击时$emit触发change-state函数并将$event事件参数传递给父组件 -->
+      <input
+        type="checkbox"
+        :checked="todoItem.completed"
+        @click="$emit('change-state', $event)"
+      />
+      <!-- 显示todoItem内容 -->
+      {{ todoItem.content }}
       <!-- 自定义复选框组件 -->
       <span class="check-button"></span>
     </label>
@@ -12,7 +20,9 @@
 
 <script>
 export default {
-  name: "TodoListItem"
+  name: "TodoListItem",
+  // 接收TodoList父组件中todo-item
+  props: ["todoItem"]
 };
 </script>
 
@@ -29,6 +39,12 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* 选中样式 */
+.todo-item.done label {
+  text-decoration: line-through;
+  font-style: italic;
 }
 
 .todo-item label span.check-button {

@@ -5,24 +5,52 @@
     <div class="container">
       <!-- 标题 -->
       <h1>欢迎使用TODO!</h1>
-      <!-- 添加todo的输入框 -->
-      <todo-add />
-      <!-- 过滤选项 -->
-      <todo-filter />
-      <!-- todo列表 -->
-      <todo-list />
+      <!-- 添加todo的输入框 绑定addTodo函数处理事件-->
+      <todo-add :tid="todos.length" @add-todo="addTodo" />
+      <!-- 过滤选项 将selected值传递给子组件 @change-filter="filter=$event"接收子组件的传值-->
+      <todo-filter :selected="filter" @change-filter="filter=$event" />
+      <!-- todo列表 绑定todos数据-->
+      <todo-list :todos="filteredTodos" />
     </div>
   </main>
 </template>
 
 <script>
+import { computed, ref } from "vue";
 import TodoAdd from "./components/TodoAdd";
 import TodoFilter from "./components/TodoFilter";
 import TodoList from "./components/TodoList";
 
 export default {
   name: "App",
-  components: { TodoAdd, TodoFilter, TodoList }
+  components: { TodoAdd, TodoFilter, TodoList },
+  setup() {
+    // todos 作为默认todo列表的数据 绑定到todo-list上
+    const todos = ref([]);
+    // 添加todo函数 todo参数由子组件TodoAdd.vue传过来 追加到列表中
+    const addTodo = todo => todos.value.push(todo);
+    // 保存默认过滤选项为全部
+    const filter = ref("all");
+    // 根据filter值过滤todos列表 利用计算属性
+    const filteredTodos = computed(() => {
+      switch (filter.value) {
+        case "done":
+          return todos.value.filter(todo => todo.completed);
+        case "todo":
+          return todos.value.filter(todo => !todo.completed);
+        default:
+          return todos.value;
+      }
+    });
+
+    // 为了在template里使用数据和函数，返回对象
+    return {
+      todos,
+      addTodo,
+      filter,
+      filteredTodos
+    };
+  }
 };
 </script>
 
